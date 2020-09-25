@@ -35,5 +35,18 @@ class ShellHelper {
         suspend fun togglePower() {
             runCommand("echo 'powa!'")
         }
+
+        fun getVolume() : String {
+//            val p = Runtime.getRuntime().exec("amixer cget numid=6");
+            val p = Runtime.getRuntime().exec("echo '100%'");
+            val res = p.waitFor()
+            val stdOut = IOUtils.toString(p.inputStream, Charsets.UTF_8)
+            val stdErr = IOUtils.toString(p.errorStream, Charsets.UTF_8)
+
+            return when (res) {
+                0 -> stdOut
+                else -> stdErr
+            }
+        }
     }
 }

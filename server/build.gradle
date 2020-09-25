@@ -41,4 +41,9 @@ dependencies {
 
     //Apache commons
     implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+
+    //GPIO
+//    implementation "com.github.mhashim6:Pi4K:0.1"
+
+
 }

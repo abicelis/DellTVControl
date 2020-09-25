@@ -37,14 +37,21 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
+        get("/volume") {
+            val volume = ShellHelper.getVolume();
+            call.respondText("Volume at $volume", contentType = ContentType.Text.Plain)
+        }
         get("/volup") {
             ShellHelper.volumeUp()
+            call.respond(HttpStatusCode.OK)
         }
         get("/voldown") {
             ShellHelper.volumeDown()
+            call.respond(HttpStatusCode.OK)
         }
         get("/power") {
             ShellHelper.togglePower()
+            call.respond(HttpStatusCode.OK)
         }
         get("/help") {
             call.respond(
