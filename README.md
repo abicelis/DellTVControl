@@ -25,7 +25,7 @@ Hack the monitor using the RPi1 so that
   - When turning on handle USB soundbar volume.
 
 
-# Actual guide
+# Dell USB soundbar installation
 
 ## Set Dell USB soundbar as default USB sound device
 **Note:** OG Guide [here](https://www.raspberrypi-spy.co.uk/2019/06/using-a-usb-audio-device-with-the-raspberry-pi/)  
@@ -113,7 +113,7 @@ thd --triggers /etc/triggerhappy/triggers.d/ /dev/input/event*
 ```
 
 
-# Note, by default triggerhappy runs as user `nobody` (You can see this by running`sudo service triggerhappy status`), `nobody` doesn't have enough permissions to run `amixer`, so we'll need to change the user to 'pi'.
+Note, by default triggerhappy runs as user `nobody` (You can see this by running`sudo service triggerhappy status`), `nobody` doesn't have enough permissions to run `amixer`, so we'll need to change the user to 'pi'.
 **Note:** OG Guide [here](https://retropie.org.uk/forum/topic/18133/triggerhappy-daemon-thd-doesn-t-work-on-my-pi-running-retropie-help/24?_=1594513494684&lang=en-US)  
 
 ```bash 
@@ -122,10 +122,71 @@ sudo nano /etc/systemd/system/multi-user.target.wants/triggerhappy.service
 ```
 
 
-# Force HDMI so that RPi boots properly without an HDMI cable plugged in?
+## Force HDMI so that RPi boots properly without an HDMI cable plugged in?
 ```bash
 # Not exactly sure why this is needed, but...
 # In the SD card, boot partition's ./config.txt, uncomment the line:
 hdmi_force_hotplug=1
 
 ```
+
+
+
+
+# Enable server
+
+Clone the DellTVControl repo
+
+```bash
+# Geenrate a keypair
+ssh-keygen
+
+#Go to Github.com, install the public key into abicelis.
+cat ~/.ssh/id_rsa.pub
+
+# Install git
+sudo apt-get install git
+
+# Clone the repo
+cd ~
+mkdir workspace
+cd workspace
+git clone git@github.com:abicelis/DellTVControl.git
+
+```
+
+Install Java * JDK
+
+```bash
+#Server is built on Ktor, a Kotlin server API thing, we need jdk (RP1 only likes jdk v8) to run Kotlin code
+sudo apt-get install openjdk-8-jre
+
+# Add these to ~/.profile
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf
+export PATH=$PATH:/usr/lib/jvm/java-8-openjdk-armhf/bin
+
+#You should be able to run / build the server with
+
+cd ~/workspace/DellTVControl/server
+./gradlew run
+./gradlew build
+
+# Built jar should be in ./build dir
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
