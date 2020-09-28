@@ -133,9 +133,10 @@ hdmi_force_hotplug=1
 
 
 
+
 # Enable server
 
-Clone the DellTVControl repo
+## Install git, link to GitHub via Pkey, clone the DellTVControl repo
 
 ```bash
 # Geenrate a keypair
@@ -155,7 +156,8 @@ git clone git@github.com:abicelis/DellTVControl.git
 
 ```
 
-Install Java * JDK
+
+## Install Java 8 JDK, build and run the server.
 
 ```bash
 #Server is built on Ktor, a Kotlin server API thing, we need jdk (RP1 only likes jdk v8) to run Kotlin code
@@ -171,7 +173,10 @@ cd ~/workspace/DellTVControl/server
 ./gradlew run
 ./gradlew build
 
-# Built jar should be in ./build dir
+
+# Run the built jar with
+java -jar build/libs/tvcontrol-0.0.4-all.jar
+
 ```
 
 
