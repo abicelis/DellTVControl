@@ -39,7 +39,11 @@ fun Application.module(testing: Boolean = false) {
     routing {
         get("/volume") {
             val volume = ShellHelper.getVolume();
-            call.respondText("Volume at $volume", contentType = ContentType.Text.Plain)
+
+            if(volume != null)
+                call.respondText("Volume at $volume", contentType = ContentType.Text.Plain)
+            else
+                call.respondText("Error getting volume", contentType = ContentType.Text.Plain)
         }
         get("/volup") {
             ShellHelper.volumeUp()
@@ -49,16 +53,28 @@ fun Application.module(testing: Boolean = false) {
             ShellHelper.volumeDown()
             call.respond(HttpStatusCode.OK)
         }
-        get("/power") {
+
+        get("/getpower") {
+            val power = ShellHelper.getPower()
+
+            if(power != null)
+                call.respondText("TV is " + if (power) "on" else "off", contentType = ContentType.Text.Plain)
+            else
+                call.respondText("Error getting power status", contentType = ContentType.Text.Plain)
+        }
+
+        get("/togglepower") {
             ShellHelper.togglePower()
             call.respond(HttpStatusCode.OK)
         }
         get("/help") {
             call.respond(
                 mapOf(
+                    "Get the volume"            to "/getvolume",
                     "Turn the volume up"        to "/volup",
                     "Turn the volume down"      to "/voldown",
-                    "Toggle the power"          to "/power"
+                    "Get power status"          to "/getpower",
+                    "Toggle the power"          to "/togglepower"
                 )
             )
         }
@@ -73,11 +89,6 @@ fun Application.module(testing: Boolean = false) {
             exception<AuthorizationException> { cause ->
                 call.respond(HttpStatusCode.Forbidden)
             }
-
-        }
-
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
         }
     }
 }
