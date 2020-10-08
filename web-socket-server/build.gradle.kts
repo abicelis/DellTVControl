@@ -33,7 +33,16 @@ application {
 }
 
 tasks.withType<ShadowJar>() {
+    val destination = File(project.rootDir.path + "/fatjar")
+    destinationDirectory.set(destination)
+
     manifest {
         attributes["Main-Class"] = "MainKt"
+    }
+}
+
+tasks.withType<Delete>() {
+    doFirst {
+        File(project.rootDir.path + "/fatjar").deleteRecursively()
     }
 }
