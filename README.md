@@ -157,25 +157,24 @@ git clone git@github.com:abicelis/DellTVControl.git
 ```
 
 
-## Install Java 8 JDK, build and run the server.
+## Install Java 8 JDK, build/run the server or just run the fatJar from the repo
 
 ```bash
-#Server is built on Ktor, a Kotlin server API thing, we need jdk (RP1 only likes jdk v8) to run Kotlin code
+#To run the server, we need the Java JDK (RP1 only works with JDK v8)
 sudo apt-get install openjdk-8-jre
 
 # Add these to ~/.profile
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf
 export PATH=$PATH:/usr/lib/jvm/java-8-openjdk-armhf/bin
 
-#You should be able to run / build the server with
-
+# From here, you can either run / build the project
 cd ~/workspace/DellTVControl/server
 ./gradlew run
 ./gradlew build
 
-
-# Run the built jar with
-java -jar build/libs/tvcontrol-0.0.4-all.jar
+# Or just run the latest fatjar from the repo (Recommended, gradle takes ages to do anything on a RP1)
+cd ~/workspace/DellTVControl/server
+java -jar ~/workspace/DellTVControl/server/fatjar/web-socket-server-x.y-all.jar
 
 ```
 
