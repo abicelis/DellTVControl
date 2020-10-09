@@ -23,6 +23,9 @@ dependencies {
 
     // Apache commons
     implementation (group= "commons-io", name= "commons-io", version= "2.8.0")
+
+    //Coroutines
+    implementation(group="org.jetbrains.kotlinx", name="kotlinx-coroutines-core", version="1.3.9")
 }
 
 tasks.withType<KotlinCompile>() {

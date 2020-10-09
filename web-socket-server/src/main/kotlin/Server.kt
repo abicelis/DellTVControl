@@ -2,12 +2,11 @@ import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import java.lang.Exception
+import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 
-class Server(inetSocketAddress: InetSocketAddress, sh: ShellHelper) : WebSocketServer(inetSocketAddress) {
-    private val shellHelper = sh;
-
+class Server(inetSocketAddress: InetSocketAddress) : WebSocketServer(inetSocketAddress) {
 
     override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) {
         conn?.send("Connected to Server!")
@@ -40,16 +39,16 @@ class Server(inetSocketAddress: InetSocketAddress, sh: ShellHelper) : WebSocketS
 
     private fun handleMessage(conn: WebSocket?, message: String?) {
         if(message != null) {
-            when (message) {
-                "get-volume" -> conn?.send("Volume is ${shellHelper.getVolume()}")
-                "volume-up" -> shellHelper.volumeUp()
-                "volume-down" -> shellHelper.volumeDown()
-                "set-volume" -> shellHelper.setVolume(50)
-                "get-power" -> conn?.send( if(shellHelper.isOn()) "TV is on" else "TV is off")
-                "turn-on" -> shellHelper.turnOnOff(true)
-                "turn-off" -> shellHelper.turnOnOff(false)
-                "help" -> conn?.send("get-volume volume-up volume-down set-volume get-power turn-on turn-off")
+            try {
+                TVAction.valueOf(message).run()
+
+            } catch (e: IllegalArgumentException) {
+                println("Received an invalid message from '" + (conn?.remoteSocketAddress ?: "NULL") + "'. Message '$message'")
+                conn?.send("Invalid message. Try sending " + TVAction.values().joinToString { it.name })
             }
+        } else {
+            println("Received a NULL message from '" + (conn?.remoteSocketAddress ?: "NULL") + "'.")
+            conn?.send("Received NULL message. Try sending " + TVAction.values().joinToString { it.name })
         }
     }
 
@@ -63,6 +62,6 @@ class Server(inetSocketAddress: InetSocketAddress, sh: ShellHelper) : WebSocketS
     }
 
     override fun onStart() {
-        println("Server started successfully")
+        println("Server started successfully. Listening on port ${address.port}" )
     }
 }
