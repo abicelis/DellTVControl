@@ -10,7 +10,7 @@ enum class TVAction {
         override fun run(): Any? {
             //amixer cget numid=6 | sed -n -E 's/[[:blank:]]{2}:[[:blank:]]values=(.*),.*$/\1/p' | awk '{printf ("%.0f\n",$1/51*100)}'
             val result = Shell.runCommand(
-                "amixer cget numid=6 | sed -n -E 's/[[:blank:]]{2}:[[:blank:]]values=(.*),.*\$/\\1/p' | awk '{printf (\"%.0f\\n\",\$1/51*100)}'",
+                "/usr/bin/amixer -M set PCM 0%+ | sed -n -E 's/^.*Left:\\ Playback[[:blank:]][[:digit:]]*[[:blank:]]\\[(.*)\\][[:blank:]]\\[\\-.*\$/\\1/p'",
                 "Could not get the volume."
             )
             return result.stdOut;
