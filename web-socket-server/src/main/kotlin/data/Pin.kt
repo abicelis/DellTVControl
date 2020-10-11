@@ -4,10 +4,11 @@ package data
 //BCM pins used by Action.kt for the gpio utility
 //Check README.md or run 'gpio readall' on RPi for more info
 enum class Pin(val BCMPin: Int) {
-    POWER_SENSE(17),
-    MACRO_4(18),
-    MACRO_2(27),
-    MACRO_1(22),
-    MACRO_3(23),
-    POWER(24)
+                                //Brown - GND
+    POWER_SENSE(25),    //Red
+    MACRO_4(24),        //Orange
+    MACRO_2(23),        //Yellow
+    MACRO_1(22),        //Green
+    MACRO_3(27),        //Blue
+    POWER(18)           //Gray
 }

@@ -266,6 +266,7 @@ Examples:
 
 
 ## Run the server on boot.
+More info: https://www.raspberrypi.org/documentation/linux/usage/systemd.md
 
 ```bash
 # Set web-socket-server as a systemd service
