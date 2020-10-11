@@ -201,13 +201,13 @@ java -jar ~/workspace/DellTVControl/server/fatjar/web-socket-server-x.y-all.jar
 | Wire color | Function    | Physical Pin (RPi) | BCM Pin                                  | GPIO Boot Setting |
 |------------|-------------|--------------------|------------------------------------------|-------------------|
 |            |             |                    | Used in server code and /boot/config.txt | /boot/config.txt  |
-| Brown      | GND         | 6                  | -                                        | -                 |
-| Red        | POWER_SENSE | 11                 | 17                                       | IN/pulldown       |
-| Orange     | MACRO_4     | 12                 | 18                                       | IN/no pull        |
-| Yellow     | MACRO_2     | 13                 | 27                                       | IN/no pull        |
+| Brown      | GND         | 25                 | -                                        | -                 |
+| Red        | POWER_SENSE | 22                 | 25                                       | IN/pulldown       |
+| Orange     | MACRO_4     | 18                 | 24                                       | IN/no pull        |
+| Yellow     | MACRO_2     | 16                 | 23                                       | IN/no pull        |
 | Green      | MACRO_1     | 15                 | 22                                       | IN/no pull        |
-| Blue       | MACRO_3     | 16                 | 23                                       | IN/no pull        |
-| Gray       | POWER       | 18                 | 24                                       | IN/no pull        |
+| Blue       | MACRO_3     | 13                 | 27                                       | IN/no pull        |
+| Gray       | POWER       | 12                 | 18                                       | IN/no pull        |
 Table made with: https://www.tablesgenerator.com/markdown_tables
 
 Also, here's a handy GPIO pin table which will let us make sure where the GPIO physical pins are
