@@ -260,19 +260,21 @@ Examples:
 {"action":"POWER_GET","value":""}
 {"action":"POWER_TOGGLE","value":""}
 {"action":"POWER_GET","value":""}
+{"action":"MACRO_1","value":""}
+
 ```
 
 
 ## Run the server on boot.
 
 ```bash
-# Set up a systemd service
+# Set web-socket-server as a systemd service
 sudo ln -s ~/workspace/DellTVControl/web-socket-server/web-socket-server.service /etc/systemd/system
 
-#Control the service with
+# Note: Control the service with
 sudo systemctl start/stop/restart/status web-socket-server.service
 
-#To set it up to start at boot, enable it
+# Set it up to start at boot, enable it
 sudo systemctl enable web-socket-server.service
 ```
 
