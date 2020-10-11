@@ -1,0 +1,14 @@
+[Unit]
+Description=web-socket-server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/java -jar web-socket-server-0.2-all.jar
+WorkingDirectory=/home/pi/workspace/DellTVControl/web-socket-server/fatjar
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
