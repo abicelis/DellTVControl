@@ -1,63 +1,77 @@
+import data.ServerResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetSocketAddress
-import kotlin.system.exitProcess
+
+var running = true
+val allowedHosts = "0.0.0.0"
+val port = 55555
+val POLLING_DELAY = 1000L
 
 fun main() {
-    val POWER_POLLING_DELAY = 1000L
+//    Shell.debug = true
+    var server: Server? = null
 
-    val allowedHosts = "0.0.0.0"
-    var running = true;
-//    val ports = arrayOf(55555, 55556, 55557);
-    val port = 55555;
-//    var server: Server? = null
+    // Start the server
+    try {
+        server = Server(InetSocketAddress(allowedHosts, port))
+        server.start()
+    } catch (e: Exception) {
+        stopServer(server)
+        throw Exception("Could not start the server. Unrecoverable error. Exiting.", e)
+    }
 
 
-//    for (port in ports) {
-//        try {
-            val server = Server(InetSocketAddress(allowedHosts, port))
-            server.start()
-//        } catch (e: Exception) { //TODO: catch the actual exception, port in use.
-//            println("Port $port in use")
-//            server?.stop()
-//        }
-//    }
+    // Start polling power status to detect and broadcast changes in power status
+    GlobalScope.launch(context = Dispatchers.IO){
+        var power : ServerResponse
+        try {
+            // We can afford a non-null asserted call (!!) here, because
+            // Action.POWER_GET.go() either returns non-null or throws an Exception
+            power = Action.POWER_GET.go(null)!!
 
-//    val thread = Thread(Runnable {
-//        Thread.sleep(500)
-//        println("Checking tv stat")
-//        server.broadcast("TV is off or whatever!")
-//    });
+        } catch (e: Exception) {
+            stopServer(server)
+            throw Exception("Could not get initial power status. Unrecoverable error. Exiting.", e)
+        }
 
-    GlobalScope.launch {
-        var power = TVAction.POWER_GET.run().toString().toBoolean()
-        println("Power is now " + if (power) "on." else "off.")
+        println("Initially, POWER_STATUS is ${power.value}")
 
         while(running) {
-            var powerNow = TVAction.POWER_GET.run().toString().toBoolean()
-            println("! Power is now " + if (powerNow) "on." else "off.")
+            val powerNow = Action.POWER_GET.go(null)!!
 
-            if(powerNow != power) {
+            if(powerNow.value != power.value) {
                 power = powerNow
-                println("Power changed to " + if (powerNow) "on." else "off.")
-                server.broadcast("Power is now " + if (power) "on." else "off.")
+
+                println("POWER_STATUS changed to ${power.value}")
+                server.broadcast(Json.encodeToString(power))
             }
-            delay(POWER_POLLING_DELAY)
+            delay(POLLING_DELAY)
         }
     }
 
-
+    // Read stdIn for commands
     val reader = BufferedReader(InputStreamReader(System.`in`))
-    while (true) {
-        val line = reader.readLine();
-        if(line == "exit") {
-            server.stop(1000)
+    while (running) {
+        val line = reader.readLine()
+        if (line.isNotEmpty()) {
+            if (line == "shutdown") {
+                println("Shutting the server down")
+                stopServer(server)
+            } else {
+                println("Type 'shutdown' to shut the server down")
+            }
         }
     }
+}
 
-//    println("Could not start server. Exiting...")
-//    exitProcess(-1)
+fun stopServer(server: Server?) {
+    server?.stop(1000)
+    running = false
 }

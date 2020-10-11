@@ -1,16 +1,10 @@
+import data.CommandResult
+import data.Pin
 import org.apache.commons.io.IOUtils
 
 class Shell {
     companion object {
-        private var debug = false
-
-//        fun isDebug(): Boolean {
-//            return debug
-//        }
-//
-//        fun setDebug(d: Boolean) {
-//            debug = d
-//        }
+        var debug = false
 
         fun runCommand(command: String, exceptionMessage: String) : CommandResult {
             try {
@@ -20,8 +14,8 @@ class Shell {
                 val p = Runtime.getRuntime().exec(command)
                 val exitVal = p.waitFor()
                 val result = CommandResult(exitVal,
-                    IOUtils.toString(p.inputStream, Charsets.UTF_8),
-                    IOUtils.toString(p.errorStream, Charsets.UTF_8))
+                    IOUtils.toString(p.inputStream, Charsets.UTF_8).trim(),
+                    IOUtils.toString(p.errorStream, Charsets.UTF_8).trim())
 
                 if(debug) {
                     println("Process exit val: ${result.exitVal}")
@@ -36,6 +30,14 @@ class Shell {
             } catch (e : Exception) {
                 throw Exception(exceptionMessage, e);
             }
+        }
+
+        fun togglePin(pin: Pin, exceptionMessage: String) {
+            runCommand("gpio -g mode ${pin.BCMPin} in", exceptionMessage)
+            Thread.sleep(100)
+            runCommand("gpio -g mode ${pin.BCMPin} out", exceptionMessage)
+            Thread.sleep(100)
+            runCommand("gpio -g mode ${pin.BCMPin} in", exceptionMessage)
         }
     }
 }

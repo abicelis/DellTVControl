@@ -1,13 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar //Shadow plugin for fatjars
 
 plugins {
     kotlin("jvm") version "1.4.10"
-    id("com.github.johnrengelman.shadow") version "5.1.0"
+    kotlin("plugin.serialization") version "1.4.10" //JSON serialization
+    id("com.github.johnrengelman.shadow") version "5.1.0" //Shadow plugin for fatjars
     application
 }
 group = "ca.alejandrobicelis"
-version = "0.1"
+version = "0.2"
 
 repositories {
     mavenCentral()
@@ -26,6 +27,10 @@ dependencies {
 
     //Coroutines
     implementation(group="org.jetbrains.kotlinx", name="kotlinx-coroutines-core", version="1.3.9")
+
+    //JSON serialization
+    implementation(kotlin("stdlib", org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION)) // or "stdlib-jdk8"
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
 }
 
 tasks.withType<KotlinCompile>() {

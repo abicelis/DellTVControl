@@ -136,6 +136,23 @@ hdmi_force_hotplug=1
 
 # Enable server
 
+## Configure GPIO in/out setting and resistor pulls from startup
+
+By default, the GPIO pins we're using are by default set as INPUTs, so we're good there.
+We are changing the PULL (up/down) resustor modes tho.
+
+More info here: https://www.raspberrypi.org/documentation/configuration/config-txt/gpio.md
+
+```bash
+sudo nano /boot/config.txt
+# Add the lines below:
+
+# GPIO configs for server
+gpio=18,27,22,23,24=pn
+gpio=17=pd
+```
+
+
 ## Install git, link to GitHub via Pkey, clone the DellTVControl repo
 
 ```bash
@@ -179,18 +196,81 @@ java -jar ~/workspace/DellTVControl/server/fatjar/web-socket-server-x.y-all.jar
 ```
 
 
+## Wiring table of TV cables - RPi GPIO pins
+
+| Wire color | Function    | Physical Pin (RPi) | BCM Pin                                  | GPIO Boot Setting |
+|------------|-------------|--------------------|------------------------------------------|-------------------|
+|            |             |                    | Used in server code and /boot/config.txt | /boot/config.txt  |
+| Brown      | GND         | 6                  | -                                        | -                 |
+| Red        | POWER_SENSE | 11                 | 17                                       | IN/pulldown       |
+| Orange     | MACRO_4     | 12                 | 18                                       | IN/no pull        |
+| Yellow     | MACRO_2     | 13                 | 27                                       | IN/no pull        |
+| Green      | MACRO_1     | 15                 | 22                                       | IN/no pull        |
+| Blue       | MACRO_3     | 16                 | 23                                       | IN/no pull        |
+| Gray       | POWER       | 18                 | 24                                       | IN/no pull        |
+Table made with: https://www.tablesgenerator.com/markdown_tables
+
+Also, here's a handy GPIO pin table which will let us make sure where the GPIO physical pins are
+Note that we're using WiringPi's gpio utility to control the GPIO pins. 
+Also note that WiringPi is pre installed in raspbian!
+More info: http://wiringpi.com/the-gpio-utility/
+
+Also also note that the server code uses the BCM (Broadcom) pin nomenclature.
+
+```bash
+
+pi@husker:~ $ gpio readall
+ +-----+-----+---------+------+---+-Model B1-+---+------+---------+-----+-----+
+ | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ |     |     |    3.3v |      |   |  1 || 2  |   |      | 5v      |     |     |
+ |   2 |   8 |   SDA.1 |   IN | 1 |  3 || 4  |   |      | 5v      |     |     |
+ |   3 |   9 |   SCL.1 |   IN | 1 |  5 || 6  |   |      | 0v      |     |     |
+ |   4 |   7 | GPIO. 7 |   IN | 1 |  7 || 8  | 1 | ALT0 | TxD     | 15  | 14  |
+ |     |     |      0v |      |   |  9 || 10 | 1 | ALT0 | RxD     | 16  | 15  |
+ |  17 |   0 | GPIO. 0 |   IN | 0 | 11 || 12 | 0 | IN   | GPIO. 1 | 1   | 18  |
+ |  27 |   2 | GPIO. 2 |   IN | 0 | 13 || 14 |   |      | 0v      |     |     |
+ |  22 |   3 | GPIO. 3 |   IN | 0 | 15 || 16 | 0 | IN   | GPIO. 4 | 4   | 23  |
+ |     |     |    3.3v |      |   | 17 || 18 | 0 | IN   | GPIO. 5 | 5   | 24  |
+ |  10 |  12 |    MOSI |   IN | 0 | 19 || 20 |   |      | 0v      |     |     |
+ |   9 |  13 |    MISO |   IN | 0 | 21 || 22 | 0 | IN   | GPIO. 6 | 6   | 25  |
+ |  11 |  14 |    SCLK |   IN | 0 | 23 || 24 | 1 | IN   | CE0     | 10  | 8   |
+ |     |     |      0v |      |   | 25 || 26 | 1 | IN   | CE1     | 11  | 7   |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
+ +-----+-----+---------+------+---+-Model B1-+---+------+---------+-----+-----+
+```
 
 
+## Troubleshooting/testing the websocket server
+
+Note: to troubleshoot the websocket server, you could use websocat..
+
+` websocat --linemode-strip-newlines ws://192.168.0.101:55555`
+
+Server accepts JSON in the form of: `{"action":"<action>","value":"<value_if_applicable>"}`
+
+where <action> is one of: VOLUME_UP, VOLUME_DOWN, VOLUME_SET, VOLUME_GET, POWER_GET, POWER_TOGGLE, MACRO_1, POWER_GET, MACRO_3, MACRO_4
+
+Examples:
+
+```bash
+{"action":"VOLUME_UP","value":""}
+{"action":"VOLUME_SET","value":"44"}
+{"action":"POWER_GET","value":""}
+{"action":"POWER_TOGGLE","value":""}
+{"action":"POWER_GET","value":""}
+```
 
 
+## Run the server on boot.
 
+```bash
+sudo nano /etc/rc.local
+# Add this BEFORE the 'exit 0' line
+# ALSO MAKE SURE TO REPLACE THE X Y placeholders in 'web-socket-server-X.Y-all.jar' WITH THE PROPER VERSION
 
-
-
-
-
-
-
-
-
+# Run the web-socket-server
+java -jar ~/workspace/DellTVControl/web-socket-server/fatjar/web-socket-server-X.Y-all.jar &
+```
 

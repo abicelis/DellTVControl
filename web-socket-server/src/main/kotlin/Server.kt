@@ -1,15 +1,17 @@
+import data.ServerRequest
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 
 class Server(inetSocketAddress: InetSocketAddress) : WebSocketServer(inetSocketAddress) {
 
     override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) {
-        conn?.send("Connected to Server!")
+//        conn?.send("Connected to Server!")
 //        broadcast("New connection to '" + handshake?.resourceDescriptor + "'")
         println("New connection to '${ if(conn != null) conn.remoteSocketAddress else "NULL"}'")
 
@@ -38,17 +40,23 @@ class Server(inetSocketAddress: InetSocketAddress) : WebSocketServer(inetSocketA
     }
 
     private fun handleMessage(conn: WebSocket?, message: String?) {
+        var error = true;
+
         if(message != null) {
             try {
-                TVAction.valueOf(message).run()
+                val request = Json.decodeFromString<ServerRequest>(message)
+                val response = Action.valueOf(request.action).go(request)
+                if(response != null)
+                    broadcast(Json.encodeToString(response))
 
-            } catch (e: IllegalArgumentException) {
-                println("Received an invalid message from '" + (conn?.remoteSocketAddress ?: "NULL") + "'. Message '$message'")
-                conn?.send("Invalid message. Try sending " + TVAction.values().joinToString { it.name })
-            }
-        } else {
-            println("Received a NULL message from '" + (conn?.remoteSocketAddress ?: "NULL") + "'.")
-            conn?.send("Received NULL message. Try sending " + TVAction.values().joinToString { it.name })
+                error = false;
+            } catch (e: Exception) { }
+        }
+
+        if(error){
+            println("Received an invalid message from '" + (conn?.remoteSocketAddress ?: "NULL") + "'. Message '$message'")
+            val exampleRequest = Json.encodeToString(ServerRequest("<action>","<value_if_applicable>"))
+            conn?.send("Invalid message. Try sending '$exampleRequest' where <action> is one of: " + Action.values().joinToString { it.name })
         }
     }
 
