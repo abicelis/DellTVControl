@@ -266,11 +266,13 @@ Examples:
 ## Run the server on boot.
 
 ```bash
-sudo nano /etc/rc.local
-# Add this BEFORE the 'exit 0' line
-# ALSO MAKE SURE TO REPLACE THE X Y placeholders in 'web-socket-server-X.Y-all.jar' WITH THE PROPER VERSION
+# Set up a systemd service
+sudo ln -s ~/workspace/DellTVControl/web-socket-server/web-socket-server.service /etc/systemd/system
 
-# Run the web-socket-server
-java -jar ~/workspace/DellTVControl/web-socket-server/fatjar/web-socket-server-X.Y-all.jar &
+#Control the service with
+sudo systemctl start/stop/restart/status web-socket-server.service
+
+#To set it up to start at boot, enable it
+sudo systemctl enable web-socket-server.service
 ```
 

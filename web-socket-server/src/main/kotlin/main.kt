@@ -56,19 +56,19 @@ fun main() {
         }
     }
 
-    // Read stdIn for commands
-    val reader = BufferedReader(InputStreamReader(System.`in`))
-    while (running) {
-        val line = reader.readLine()
-        if (line.isNotEmpty()) {
-            if (line == "shutdown") {
-                println("Shutting the server down")
-                stopServer(server)
-            } else {
-                println("Type 'shutdown' to shut the server down")
-            }
-        }
-    }
+//    // Read stdIn for commands
+//    val reader = BufferedReader(InputStreamReader(System.`in`))
+//    while (running) {
+//        val line = reader.readLine()
+//        if (line.isNotEmpty()) {
+//            if (line == "shutdown") {
+//                println("Shutting the server down")
+//                stopServer(server)
+//            } else {
+//                println("Type 'shutdown' to shut the server down")
+//            }
+//        }
+//    }
 }
 
 fun stopServer(server: Server?) {
