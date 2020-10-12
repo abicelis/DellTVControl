@@ -191,7 +191,7 @@ cd ~/workspace/DellTVControl/server
 
 # Or just run the latest fatjar from the repo (Recommended, gradle takes ages to do anything on a RP1)
 cd ~/workspace/DellTVControl/server
-java -jar ~/workspace/DellTVControl/server/fatjar/web-socket-server-x.y-all.jar
+java -jar ~/workspace/DellTVControl/server/fatjar/tvcontrol-server-x.y-all.jar
 
 ```
 
@@ -269,13 +269,13 @@ Examples:
 More info: https://www.raspberrypi.org/documentation/linux/usage/systemd.md
 
 ```bash
-# Set web-socket-server as a systemd service
-sudo ln -s ~/workspace/DellTVControl/web-socket-server/web-socket-server.service /etc/systemd/system
+# Set tvcontrol-server as a systemd service
+sudo ln -s ~/workspace/DellTVControl/tvcontrol-server/tvcontrol-server.service /etc/systemd/system
 
 # Note: Control the service with
-sudo systemctl start/stop/restart/status web-socket-server.service
+sudo systemctl start/stop/restart/status tvcontrol-server.service
 
 # Set it up to start at boot, enable it
-sudo systemctl enable web-socket-server.service
+sudo systemctl enable tvcontrol-server.service
 ```
 
