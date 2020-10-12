@@ -1,0 +1,14 @@
+[Unit]
+Description=tvcontrol-server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/java -jar tvcontrol-server-0.2-all.jar
+WorkingDirectory=/home/pi/workspace/DellTVControl/tvcontrol-server/fatjar
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
