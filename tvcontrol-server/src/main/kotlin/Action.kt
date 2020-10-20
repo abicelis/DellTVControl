@@ -44,14 +44,14 @@ enum class Action {
             val regex = Regex("""[0-9]{1,3}%""")
             val volume = regex.find(result)?.value?.replace("%","")
 
-            return ServerResponse("volume", volume.toString())
+            return ServerResponse(this.name, volume.toString())
         }
     },
     POWER_GET {
         override fun go(request: ServerRequest?): ServerResponse? {
             //todo maybe do a try catch, if error send a serverresponse with error= something, so the error gets to the client.
             val result = Shell.runCommand("gpio -g read ${Pin.POWER_SENSE.BCMPin}", "Could not get power status.")
-            return ServerResponse("power", result.stdOut)
+            return ServerResponse(this.name, result.stdOut)
         }
     },
     POWER_TOGGLE {
