@@ -174,7 +174,7 @@ git clone git@github.com:abicelis/DellTVControl.git
 ```
 
 
-## Install Java 8 JDK, build/run the server or just run the fatJar from the repo
+## Install Java 8 JDK, build/run the server or just test run the fatJar from the repo
 
 ```bash
 #To run the server, we need the Java JDK (RP1 only works with JDK v8)
@@ -265,7 +265,7 @@ Examples:
 ```
 
 
-## Run the server on boot.
+## Install the server as a service and run the server on boot.
 More info: https://www.raspberrypi.org/documentation/linux/usage/systemd.md
 
 ```bash

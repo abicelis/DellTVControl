@@ -17,6 +17,18 @@
         android:padding="16dp"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <TextView
+        android:id="@+id/activity_main_power_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        tools:text="Power is ON"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/activity_main_power"
+        app:layout_constraintTop_toTopOf="@id/activity_main_power"
+        app:layout_constraintBottom_toBottomOf="@id/activity_main_power"
+        />
+
 
     <Button
         android:id="@+id/activity_main_macro_1"
@@ -82,6 +94,17 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/activity_main_volume_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        tools:text="Volume: 100%"
+        app:layout_constraintTop_toTopOf="@id/activity_main_volume_up"
+        app:layout_constraintBottom_toBottomOf="@id/activity_main_volume_down"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

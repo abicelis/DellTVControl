@@ -9,7 +9,9 @@ import java.net.URI
 /**
  * Created by abicelis on 2020-10-11
  */
-class Client(uri: URI) : WebSocketClient(uri) {
+class Client(uri: URI, serverMessageProcessor: ServerMessageProcessor) : WebSocketClient(uri) {
+    val processor = serverMessageProcessor
+
     companion object {
         val TAG = this::class.simpleName
     }
@@ -19,6 +21,7 @@ class Client(uri: URI) : WebSocketClient(uri) {
     }
 
     override fun onMessage(message: String?) {
+        processor.onMessage(message)
         Log.d(TAG, "onMessage=message")
     }
 
@@ -30,4 +33,5 @@ class Client(uri: URI) : WebSocketClient(uri) {
         Log.d(TAG, "onError")
         ex?.printStackTrace()
     }
+
 }
